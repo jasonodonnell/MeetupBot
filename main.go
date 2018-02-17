@@ -31,6 +31,9 @@ type Response struct {
 		Summary     string `json:"summary"`
 		Description string `json:"description"`
 		Location    string `json:"location"`
+		Start       struct {
+			DateTime string `json:"dateTime"`
+		} `json:"start"`
 	} `json:"items"`
 }
 
@@ -69,13 +72,10 @@ func main() {
 
 	defer r.Body.Close()
 	json.NewDecoder(r.Body).Decode(&cal)
+	fmt.Println("Meetups This Week:")
 	for _, event := range cal.Items {
-		fmt.Println("Meetups This Week:")
-		fmt.Printf("%s :: %s\n", event.Summary, event.Location)
-		// fmt.Println(event.Description)
-		// fmt.Println(event.Location)
-		// t, _ := time.Parse(time.RFC3339, event.End.DateTime)
-		// local := t.Local()
-		// fmt.Println(local)
+		t, _ := time.Parse(time.RFC3339, event.Start.DateTime)
+		meetupTime := t.Format("Mon 3:04PM")
+		fmt.Printf("%s: %s :: %s\n", meetupTime, event.Summary, event.Location)
 	}
 }
