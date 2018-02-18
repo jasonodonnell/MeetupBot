@@ -3,7 +3,6 @@ package main
 import (
 	"encoding/json"
 	"fmt"
-	"log"
 	"net/http"
 	"net/url"
 	"os"
@@ -65,7 +64,8 @@ func main() {
 	client := http.Client{Timeout: 5 * time.Second}
 	r, err := client.Get(c.URL())
 	if err != nil {
-		log.Panic(err)
+		fmt.Println(err)
+		os.Exit(1)
 	}
 
 	cal := Response{}
