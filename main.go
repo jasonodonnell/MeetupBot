@@ -58,8 +58,8 @@ func main() {
 	c := Calendar{
 		APIKey: apiKey,
 		ID:     calID,
-		Start:  string(start.Format(time.RFC3339)),
-		End:    string(end.Format(time.RFC3339)),
+		Start:  start.Format(time.RFC3339),
+		End:    end.Format(time.RFC3339),
 	}
 
 	client := http.Client{Timeout: 5 * time.Second}
