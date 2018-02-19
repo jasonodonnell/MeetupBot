@@ -1,81 +1,52 @@
 package main
 
 import (
-	"encoding/json"
 	"fmt"
 	"log"
-	"net/http"
-	"net/url"
 	"os"
 	"time"
+
+	"github.com/jasonodonnell/MeetupBot/calendar"
+	"github.com/jasonodonnell/MeetupBot/slack"
 )
 
 const apiURL = "https://www.googleapis.com/calendar/v3/calendars"
-const calID = "6l7e832ee9bemt1i9c42vltrug@group.calendar.google.com"
 
 var (
 	apiKey = getenv("API_KEY")
+	hook   = getenv("SLACK_WEBHOOK")
+	calID  = getenv("CAL_ID")
 )
 
 func getenv(name string) string {
 	env := os.Getenv(name)
 	if env == "" {
-		fmt.Println("Missing environment variable: " + name)
-		os.Exit(1)
+		log.Fatalf("Missing environment variable: %s", name)
 	}
 	return env
 }
 
-type Response struct {
-	Items []struct {
-		Summary     string `json:"summary"`
-		Description string `json:"description"`
-		Location    string `json:"location"`
-		Start       struct {
-			DateTime string `json:"dateTime"`
-		} `json:"start"`
-	} `json:"items"`
-}
-
-type Calendar struct {
-	APIKey string
-	ID     string
-	Start  string
-	End    string
-}
-
-func (c *Calendar) URL() string {
-	format := "%s/%s/events?timeMin=%s&timeMax=%s&key=%s"
-	id := url.QueryEscape(c.ID)
-	start := url.QueryEscape(c.Start)
-	end := url.QueryEscape(c.End)
-	return fmt.Sprintf(format, apiURL, id, start, end, c.APIKey)
-}
-
 func main() {
+	cal := calendar.NewCalendar(apiKey, calID, apiURL)
+	slack := slack.NewClient(hook)
+
 	start := time.Now()
-	end := start.Add(time.Hour * 24 * 6)
-	c := Calendar{
-		APIKey: apiKey,
-		ID:     calID,
-		Start:  string(start.Format(time.RFC3339)),
-		End:    string(end.Format(time.RFC3339)),
-	}
-
-	client := http.Client{Timeout: 5 * time.Second}
-	r, err := client.Get(c.URL())
+	end := start.Add(time.Hour * 24 * 7)
+	c, err := cal.UpcomingEvents(start.Format(time.RFC3339), end.Format(time.RFC3339))
 	if err != nil {
-		log.Panic(err)
+		log.Fatalf("Could not retrieve events: %s", err)
 	}
 
-	cal := Response{}
-
-	defer r.Body.Close()
-	json.NewDecoder(r.Body).Decode(&cal)
-	fmt.Println("Meetups This Week:")
-	for _, event := range cal.Items {
-		t, _ := time.Parse(time.RFC3339, event.Start.DateTime)
-		meetupTime := t.Format("Mon 3:04PM")
-		fmt.Printf("%s: %s :: %s\n", meetupTime, event.Summary, event.Location)
+	if len(c.Items) > 0 {
+		payload := "*Meetups This Week*\n\n"
+		for _, event := range c.Items {
+			t, _ := time.Parse(time.RFC3339, event.Start.DateTime)
+			meetupTime := t.Format("Mon 3:04PM")
+			payload += fmt.Sprintf("• _%s_ - %s\n", event.Summary, meetupTime)
+		}
+		payload += "\n*For more info visit* http://techlancaster.com/meetup"
+		slack.Send(payload)
+	} else {
+		log.Println("No meetups..")
 	}
 }
