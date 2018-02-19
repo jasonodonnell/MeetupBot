@@ -1,8 +1,7 @@
-# MeetupBot
+# Meetup Bot
 
-Notifies Slack of TechLancaster Meets for the week.
-
-Executed by a cron job on Monday mornings.
+Notifies Slack of Tech Lancaster meetups for the week.  Executed by a cron job 
+on Monday mornings.
 
 ## Install
 
