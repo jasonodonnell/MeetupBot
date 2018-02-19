@@ -39,20 +39,22 @@ func main() {
 		log.Fatalf("Could not retrieve events: %s", err)
 	}
 
-	if len(c.Items) > 0 {
-		payload := "*Meetups This Week*\n\n"
-		for _, event := range c.Items {
-			t, _ := time.Parse(time.RFC3339, event.Start.DateTime)
-			meetupTime := t.Format("Mon 3:04PM")
-			payload += fmt.Sprintf("• _%s_ - %s\n", event.Summary, meetupTime)
-		}
-		payload += "\n*For more info visit* http://techlancaster.com/meetup"
-
-		log.Println("Sending payload to Slack..")
-		if err = slack.Send(payload); err != nil {
-			log.Fatalf("Error sending payload to Slack: %s", err)
-		}
-	} else {
+	// check if any meetups were found
+	if len(c.Items) < 1 {
 		log.Println("No meetups..")
+		return
+	}
+
+	payload := "*Meetups This Week*\n\n"
+	for _, event := range c.Items {
+		t, _ := time.Parse(time.RFC3339, event.Start.DateTime)
+		meetupTime := t.Format("Mon 3:04PM")
+		payload += fmt.Sprintf("• _%s_ - %s\n", event.Summary, meetupTime)
+	}
+	payload += "\n*For more info visit* http://techlancaster.com/meetup"
+
+	log.Println("Sending payload to Slack..")
+	if err = slack.Send(payload); err != nil {
+		log.Fatalf("Error sending payload to Slack: %s", err)
 	}
 }
