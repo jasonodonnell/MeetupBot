@@ -16,5 +16,5 @@ go get github.com/jasonodonnell/MeetupBot
 export API_KEY='GOOGLE CALENDAR API KEY'
 export CAL_ID='GOOGLE CALENDAR ID'
 export SLACK_WEBHOOK='SLACK WEBHOOK URL'
-meetup
+meetupbot
 ```
