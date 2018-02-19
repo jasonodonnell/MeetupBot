@@ -27,6 +27,7 @@ func getenv(name string) string {
 }
 
 func main() {
+	log.SetOutput(os.Stdout)
 	cal := calendar.NewCalendar(apiKey, calID, apiURL)
 	slack := slack.NewClient(hook)
 
