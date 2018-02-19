@@ -7,7 +7,7 @@ Executed by a cron job on Monday mornings.
 ## Install
 
 ```bash
-go get github.com/jasonodonnell/MeetupBot
+go get github.com/jasonodonnell/meetupbot
 ```
 
 ## Usage
