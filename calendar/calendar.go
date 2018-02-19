@@ -27,7 +27,7 @@ type Events struct {
 	} `json:"items"`
 }
 
-// NewCalendar the calendar struct for getting events.
+// NewCalendar returns a calendar struct for getting events.
 func NewCalendar(key, id string) *calendar {
 	return &calendar{
 		key: key,
