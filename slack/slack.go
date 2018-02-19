@@ -16,14 +16,14 @@ type payload struct {
 	Text     string `json:"text"`
 }
 
-// NewClient returns the slack struct for sending notifications
+// NewClient returns the slack struct for sending notifications.
 func NewClient(hook string) *slack {
 	return &slack{
 		webhook: hook,
 	}
 }
 
-// Send takes a body string and sends it to the configured webhook
+// Send takes a body string and sends it to the configured webhook.
 func (s *slack) Send(body string) (err error) {
 	p := payload{
 		Text: body,

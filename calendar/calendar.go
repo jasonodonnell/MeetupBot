@@ -15,7 +15,7 @@ type calendar struct {
 	id  string
 }
 
-// Events represents calendar events
+// Events represents calendar events.
 type Events struct {
 	Items []struct {
 		Summary     string `json:"summary"`
@@ -27,7 +27,7 @@ type Events struct {
 	} `json:"items"`
 }
 
-// NewCalendar the calendar struct for getting events
+// NewCalendar the calendar struct for getting events.
 func NewCalendar(key, id string) *calendar {
 	return &calendar{
 		key: key,
@@ -35,8 +35,7 @@ func NewCalendar(key, id string) *calendar {
 	}
 }
 
-// Upcoming events takes a start/end time and returns a list of
-// events
+// UpcomingEvents takes a start/end time and returns a list of events.
 func (c *calendar) UpcomingEvents(start, end string) (*Events, error) {
 	client := http.Client{Timeout: 5 * time.Second}
 	r, err := client.Get(c.formatURL(start, end))
