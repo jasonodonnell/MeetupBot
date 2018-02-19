@@ -10,8 +10,6 @@ import (
 	"github.com/jasonodonnell/MeetupBot/slack"
 )
 
-const apiURL = "https://www.googleapis.com/calendar/v3/calendars"
-
 var (
 	apiKey = getenv("API_KEY")
 	calID  = getenv("CAL_ID")
@@ -28,7 +26,7 @@ func getenv(name string) string {
 
 func main() {
 	log.SetOutput(os.Stdout)
-	cal := calendar.NewCalendar(apiKey, calID, apiURL)
+	cal := calendar.NewCalendar(apiKey, calID)
 	slack := slack.NewClient(hook)
 
 	// Next 7 days from now

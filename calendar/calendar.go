@@ -8,10 +8,11 @@ import (
 	"time"
 )
 
+const apiURL = "https://www.googleapis.com/calendar/v3/calendars"
+
 type calendar struct {
 	key string
 	id  string
-	url string
 }
 
 // Events represents calendar events
@@ -27,11 +28,10 @@ type Events struct {
 }
 
 // NewCalendar the calendar struct for getting events
-func NewCalendar(key, id, url string) *calendar {
+func NewCalendar(key, id string) *calendar {
 	return &calendar{
 		key: key,
 		id:  id,
-		url: url,
 	}
 }
 
@@ -55,5 +55,5 @@ func (c *calendar) formatURL(start, end string) string {
 	id := url.QueryEscape(c.id)
 	s := url.QueryEscape(start)
 	e := url.QueryEscape(end)
-	return fmt.Sprintf(format, c.url, id, s, e, c.key)
+	return fmt.Sprintf(format, apiURL, id, s, e, c.key)
 }
