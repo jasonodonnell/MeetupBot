@@ -14,8 +14,8 @@ const apiURL = "https://www.googleapis.com/calendar/v3/calendars"
 
 var (
 	apiKey = getenv("API_KEY")
-	hook   = getenv("SLACK_WEBHOOK")
 	calID  = getenv("CAL_ID")
+	hook   = getenv("SLACK_WEBHOOK")
 )
 
 func getenv(name string) string {
@@ -30,8 +30,11 @@ func main() {
 	cal := calendar.NewCalendar(apiKey, calID, apiURL)
 	slack := slack.NewClient(hook)
 
+	// Next 7 days from now
 	start := time.Now()
 	end := start.Add(time.Hour * 24 * 7)
+
+	log.Println("Retreiving upcoming events from calendar..")
 	c, err := cal.UpcomingEvents(start.Format(time.RFC3339), end.Format(time.RFC3339))
 	if err != nil {
 		log.Fatalf("Could not retrieve events: %s", err)
@@ -45,7 +48,11 @@ func main() {
 			payload += fmt.Sprintf("• _%s_ - %s\n", event.Summary, meetupTime)
 		}
 		payload += "\n*For more info visit* http://techlancaster.com/meetup"
-		slack.Send(payload)
+
+		log.Println("Sending payload to Slack..")
+		if err = slack.Send(payload); err != nil {
+			log.Fatalf("Error sending payload to Slack: %s", err)
+		}
 	} else {
 		log.Println("No meetups..")
 	}
