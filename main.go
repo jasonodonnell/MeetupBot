@@ -33,7 +33,7 @@ func main() {
 	start := time.Now()
 	end := start.Add(time.Hour * 24 * 7)
 
-	log.Println("Retreiving upcoming events from calendar..")
+	log.Println("Retrieving upcoming events from calendar..")
 	c, err := cal.UpcomingEvents(start.Format(time.RFC3339), end.Format(time.RFC3339))
 	if err != nil {
 		log.Fatalf("Could not retrieve events: %s", err)
