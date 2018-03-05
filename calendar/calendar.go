@@ -50,7 +50,7 @@ func (c *calendar) UpcomingEvents(start, end string) (*Events, error) {
 }
 
 func (c *calendar) formatURL(start, end string) string {
-	format := "%s/%s/events?timeMin=%s&timeMax=%s&key=%s"
+	format := "%s/%s/events?timeMin=%s&timeMax=%s&singleEvents=True&orderBy=startTime&key=%s"
 	id := url.QueryEscape(c.id)
 	s := url.QueryEscape(start)
 	e := url.QueryEscape(end)
