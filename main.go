@@ -51,7 +51,7 @@ func main() {
 		meetupTime := t.Format("Mon 3:04PM")
 		payload += fmt.Sprintf("• _%s_ - %s\n", event.Summary, meetupTime)
 	}
-	payload += "\n*For more info visit* http://techlancaster.com/meetup"
+	payload += "\n*For more info visit* http://techlancaster.com/#calendar"
 
 	log.Println("Sending payload to Slack..")
 	if err = slack.Send(payload); err != nil {
